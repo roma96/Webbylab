@@ -1,0 +1,8 @@
+CREATE TABLE Films
+(
+    id INT IDENTITY(1,1) NOT NULL,
+    title NVARCHAR(30) NOT NULL,
+    releaseYear INT NOT NULL,
+    format NVARCHAR(15) NOT NULL,
+    stars NVARCHAR(200) NOT NULL
+);

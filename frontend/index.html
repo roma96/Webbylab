@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+    <title>Test task</title>
+    <style type="text/css">
+        #speclabel {
+            background-color: indigo;
+            color: white;
+            padding: 0.5rem;
+            font-family: sans-serif;
+            border-radius: 0.3rem;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        #file-chosen{
+            margin-left: 0.3rem;
+            font-family: sans-serif;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+    <script>
+        // let actualBtn = document.getElementById('actual-btn');
+
+        // let fileChosen = document.getElementById('file-chosen');
+
+        // actualBtn.addEventListener('change', function(){
+        //     fileChosen.textContent = this.files[0].name;
+        // });
+
+        $(document).ready(function () {
+            var tbody = document.getElementById('tbody');
+            function getItems() {
+
+                $.ajax({
+                    url: '/api',
+                    accepts: 'application/json',
+                    method: 'GET',
+                    success: function (data) {
+
+                        var items = data["recordset"];
+                        var html = '';
+
+                        for (var i = 0; i < items.length; i++) {
+                            html += `<tr>
+                                        <td>${items[i].id}</td>
+                                        <td>${items[i].title}</td>
+                                        <td>${items[i].releaseYear}</td>
+                                        <td>${items[i].format}</td> 
+                                        <td>${items[i].stars}</td>
+                                    </tr>`
+                        };
+                        tbody.innerHTML = html;
+
+                    }
+                });
+            }
+            getItems();
+
+            function validateID(id) {
+
+                var idIsValid = false;
+                for (var i = 0; i < $('.itemID').length; i++) {
+                    if (id == $('.itemID').eq(i).text()) {
+
+                        idIsValid = true;
+                    }
+                }
+                console.log(idIsValid)
+                return idIsValid;
+            }
+
+            function checkIDUnique(id) {
+                var idIsUnique = true;
+                for (var i = 0; i < $('.itemID').length; i++) {
+                    if (id == $('.itemID').eq(i).text()) {
+
+                        idIsUnique = false;
+                    }
+                }
+                return idIsUnique;
+            }
+
+            // запрос для просмотра элемента
+            $('#select').on('click', function () {
+                let itemID = $('#itemID1').val();
+                let filmTitle = $('#filmTitle1').val();
+                let actor = $('#actor').val();
+
+                // if (validateID(itemID)) {
+                    $.ajax({
+                        url: actor ? '/api/star/' + actor : '/api/' + (itemID ? itemID : (filmTitle ? filmTitle : " ")),
+                        accept: 'application/json',
+                        type: 'GET',
+                        success: function (data) {
+                            console.log(data);
+                            var items = data["recordset"];
+                            var html = '';
+
+                            for (var i = 0; i < items.length; i++) {
+                                html += `<tr>
+                                            <td>${items[i].id}</td>
+                                            <td>${items[i].title}</td>
+                                            <td>${items[i].releaseYear}</td>
+                                            <td>${items[i].format}</td> 
+                                            <td>${items[i].stars}</td>
+                                        </tr>`
+                            };
+                            tbody.innerHTML = html;
+                            $('#back').css({
+                                display: 'block'
+                            })
+
+                        }
+
+                    })
+                // } else { alert('invalid ID!') }
+
+            })
+
+            // запрос для удаления элемента
+            $('#delete').on('click', function () {
+                var itemID = $('#itemID1').val();
+                // if (validateID(itemID)) {
+                    $.ajax({
+                        url: '/api/' + itemID,
+                        accept: 'application/json',
+                        type: 'DELETE',
+                        success: function (data) {
+                            // console.log(data);
+                            // var items = data["recordset"];
+                            // var html = '';
+
+                            // for (var i = 0; i < items.length; i++) {
+                            //     html += `<tr>
+                            //                 <td>${items[i].id}</td>
+                            //                 <td>${items[i].title}</td>
+                            //                 <td>${items[i].releaseYear}</td>
+                            //                 <td>${items[i].format}</td> 
+                            //                 <td>${items[i].stars}</td>
+                            //             </tr>`
+                            // };
+                            // tbody.innerHTML = html;
+
+                            window.location.href = '/';
+
+                        }
+                    })
+                // } else { alert('invalid ID!') }
+            })
+            // запрос дл создания элемента
+            $('#add').on('click', function () {
+                let title = $('#title').val();
+                let releaseYear = $('#releaseYear').val();
+                let format = $('#format').val();
+                let stars = $('#stars').val();
+
+                if (title == '' || releaseYear == '' || format == '' || stars == '') {
+                    alert('empty field!');
+                    return;
+                }
+
+                let requestData = {
+                    title: $('#title').val(),
+                    releaseYear: $('#releaseYear').val(),
+                    format: $('#format').val(),
+                    stars: $('#stars').val()
+                }
+                console.log(JSON.stringify(requestData))
+
+                console.log(requestData)
+                $.ajax({
+                    url: '/api' ,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(requestData),
+                    success: function (data) {
+
+                        // var items = data["recordset"];
+                        // var html = '';
+
+                        // for (var i = 0; i < items.length; i++) {
+                        //     html += `<tr>
+                        //                 <td>${items[i].id}</td>
+                        //                 <td>${items[i].title}</td>
+                        //                 <td>${items[i].releaseYear}</td>
+                        //                 <td>${items[i].format}</td> 
+                        //                 <td>${items[i].stars}</td>
+                        //             </tr>`
+                        // };
+                        // tbody.innerHTML = html;
+
+                        window.location.href = '/';
+
+                    }
+                })
+            })
+
+            $('#sort').on('click', function () {               
+                $.ajax({
+                    url: '/api/sorted',
+                    accepts: 'application/json',
+                    method: 'GET',
+                    success: function (data) {
+
+                        var items = data["recordset"];
+                        var html = '';
+
+                        for (var i = 0; i < items.length; i++) {
+                            html += `<tr>
+                                        <td>${items[i].id}</td>
+                                        <td>${items[i].title}</td>
+                                        <td>${items[i].releaseYear}</td>
+                                        <td>${items[i].format}</td> 
+                                        <td>${items[i].stars}</td>
+                                    </tr>`
+                        };
+                        tbody.innerHTML = html;
+
+                    }
+                })
+            });
+            $('#button').on('click', function () {
+            $.ajax({
+                // Your server script to process the upload
+                url: '/',
+                type: 'POST',
+
+                // Form data
+                data: new FormData($('form')[0]),
+
+                // Tell jQuery not to process data or worry about content-type
+                // You *must* include these options!
+                cache: false,
+                contentType: false,
+                processData: false,
+
+                // Custom XMLHttpRequest
+                xhr: function () {
+                    var myXhr = $.ajaxSettings.xhr();
+                    if (myXhr.upload) {
+                        // For handling the progress of the upload
+                        myXhr.upload.addEventListener('progress', function (e) {
+                            if (e.lengthComputable) {
+                                $('progress').attr({
+                                value: e.loaded,
+                                max: e.total,
+                                });
+                            }
+                        }, false);
+                    }
+                    
+                    return myXhr;
+                },
+                success: function (data) {
+                    // alert("File was uploaded");
+                    // console.log(data);
+                    // var items = data["recordset"];
+                    // var html = '';
+
+                    // for (var i = 0; i < items.length; i++) {
+                    //     html += `<tr>
+                    //                 <td>${items[i].id}</td>
+                    //                 <td>${items[i].title}</td>
+                    //                 <td>${items[i].releaseYear}</td>
+                    //                 <td>${items[i].format}</td> 
+                    //                 <td>${items[i].stars}</td>
+                    //             </tr>`
+                    // };
+                    // tbody.innerHTML = html;
+
+                        window.location.href = '/';
+
+                    }
+                });
+            });
+
+        })
+    </script>
+</head>
+<body>
+    <div class="panel well">
+        <a id="back" href="/" style="display: none"><h2>Back to items</h2></a>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>Release Year</th>
+                    <th>Format</th>
+                    <th>Stars</th>
+                </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+        </table>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+        <div class="panel" style="padding-left: 25px; padding-bottom: 25px;">
+            <h3>Add film</h3>
+            <div class="form-group" style="width: 300px">
+                <label>Title</label> <input id="title" class="form-control input-lg" />
+            </div>
+            <div class="form-group" style="width: 300px">
+                <label>Release Year</label> <input id="releaseYear" class="form-control input-lg" />
+            </div>
+            <div class="form-group" style="width: 300px">
+                <label>Format</label> <input id="format" class="form-control input-lg" />
+            </div>
+            <div class="form-group" style="width: 300px">
+                <label>Stars</label> <input id="stars" class="form-control input-lg" />
+            </div>
+            <button id="add" class="btn btn-success btn-lg">Add Film</button>
+            <button id="sort" class="btn btn-primary btn-lg">Sort Films by Title</button>
+        </div> </div>
+        <div class="col-md-3">
+        <div class="panel" style="padding-left: 25px; padding-bottom: 25px;">
+            <h3>View(optional by id, title or ator) or delete film</h3>
+            <div class="form-group" style="width: 300px">
+                <label>Film Id</label> <input id="itemID1" class="form-control input-lg">
+            </div>
+            <div class="form-group" style="width: 300px">
+                <label>Film Title (only for view)</label> <input id="filmTitle1" class="form-control input-lg">
+            </div>
+            <div class="form-group" style="width: 300px">
+                <label>Actor (only for view)</label> <input id="actor" class="form-control input-lg">
+            </div>
+            <button id="select" class="btn btn-info btn-lg">View Film</button>
+            <button id="delete" class="btn btn-danger btn-lg">Delete Film by ID</button>
+        </div>   
+        </div>
+        <div class="col-md-3">
+            <div class="panel" style="padding-left: 25px; padding-bottom: 25px;">
+                <h3>Import films from file</h3>
+                <form enctype="multipart/form-data">
+                    <input name="recfile" type="file" />
+                    <input id="button" type="button" value="Upload" />
+                </form>
+                <!-- <form id='form' enctype="multipart/form-data">
+                    <input type="file" name="recfile" />
+                    <button id="uploadFile">Upload file</button>
+                </form> -->
+                <!-- <form enctype="multipart/form-data"></form>
+                    actual upload which is hidden
+                    <input type="file" name="recfile" id="actual-btn" hidden style="display: none;">
+
+                    our custom upload button
+                    <label id="speclabel" for="actual-btn">Choose File</label>
+
+                    name of file chosen
+                    <span id="file-chosen">No file chosen</span>
+                    <button id="uploadFile">Upload file</button>
+                </form> -->
+            </div>
+            </div>   
+            </div>
+        <div class="col-md-3">
+    </div>
+</body>
+</html>
