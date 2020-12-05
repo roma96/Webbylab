@@ -48,13 +48,13 @@ class Film {
     }
 };
 
-let f = new Film("Revenant", 30, "VHS", "Leonardo DiCaprio, Tom Hardy");
+// let f = new Film("Revenant", 30, "VHS", "Leonardo DiCaprio, Tom Hardy");
 
-console.log(f);
-console.log(f.releaseYear);
+// console.log(f);
+// console.log(f.releaseYear);
 
-f.releaseYear = 3000;
-console.log(f.releaseYear);
+// f.releaseYear = 3000;
+// console.log(f.releaseYear);
 
 //экспортируем модуль
 module.exports = Film;
