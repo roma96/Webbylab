@@ -159,7 +159,12 @@
                 let stars = $('#stars').val();
 
                 if (title == '' || releaseYear == '' || format == '' || stars == '') {
-                    alert('empty field!');
+                    alert('Empty field!');
+                    return;
+                }
+
+                if (releaseYear < 1850 || releaseYear > 2020) {
+                    alert('Input release year from 1850 to 2020!');
                     return;
                 }
 
@@ -308,7 +313,14 @@
                 <label>Release Year</label> <input id="releaseYear" class="form-control input-lg" />
             </div>
             <div class="form-group" style="width: 300px">
-                <label>Format</label> <input id="format" class="form-control input-lg" />
+                <label>Format</label>
+                <select class="form-control input-lg" id="format">
+                    <option value="DVD">DVD</option>
+                    <option value="VHS">VHS</option>
+                    <option value="Blu-Ray">Blu-Ray</option>
+                    ...
+                  </select>
+                <!-- <label>Format</label> <input id="format" class="form-control input-lg" /> -->
             </div>
             <div class="form-group" style="width: 300px">
                 <label>Stars</label> <input id="stars" class="form-control input-lg" />
