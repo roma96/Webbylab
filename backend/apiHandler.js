@@ -37,10 +37,11 @@ module.exports = {
 	},
     // создание фильма и обновление таблицы 
     addFilm: function (req, res) {
-		console.log(req.body);
 		let film = new Film(req.body.title, req.body.releaseYear, req.body.format, req.body.stars);
-		queries.insertFilm(film);
-		queries.selectAllFilms(res);
+		queries.selectFilmToValidate(film, res, function() {
+			queries.insertFilm(film);
+			queries.selectAllFilms(res);
+		});
     },
 
     // удаление элемента и обновление таблицы
