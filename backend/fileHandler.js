@@ -15,15 +15,22 @@ function readFileAndInsertToDB(filename) {
         
         console.log('from file to db');
         //разбиваем считанные данные на элементы и записываем в массив
-        let arr = data.split("\r\n\r\n");
+        let arr = data.split("\n\n");
+        console.log(arr);
         for(let i = 0; i < arr.length; i++) {
             //разбиваем блок данных по одному конкретному фильму на массив, где элементы имеют вид
             // 'Title: Blazing Saddles'
-            let arrf = arr[i].split("\r\n");
-            //вырезаем из каждого элемента массива arrf нажные строки, которые будут параметрами при создании
-            //объекта класса Film
-            let f = new Film(arrf[0].slice(7), arrf[1].slice(14), arrf[2].slice(8), arrf[3].slice(7));
-            queries.insertFilm(f);
+            let arrf = arr[i].split("\n");
+
+            // console.log(arrf);
+            // вырезаем из каждого элемента массива arrf нажные строки, которые будут параметрами при создании
+            // объекта класса Film
+            if(arrf.length == 4) {
+                let film = new Film(arrf[0].slice(7), arrf[1].slice(14), arrf[2].slice(8), arrf[3].slice(7));
+                queries.selectFilmToValidate(film, () => {
+                    queries.insertFilm(film);
+                });
+            }
         }
     });
 }
