@@ -5,31 +5,18 @@
     <meta charset="utf-8" />
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
     <title>Test task</title>
-    <style type="text/css">
-        #speclabel {
-            background-color: indigo;
-            color: white;
-            padding: 0.5rem;
-            font-family: sans-serif;
-            border-radius: 0.3rem;
-            cursor: pointer;
-            margin-top: 1rem;
-        }
-
-        #file-chosen{
-            margin-left: 0.3rem;
-            font-family: sans-serif;
-        }
-    </style>
     <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
     <script>
-        // let actualBtn = document.getElementById('actual-btn');
+        function validateStars (stars) {
+            let arrOfStars = stars.split(', ');
 
-        // let fileChosen = document.getElementById('file-chosen');
+            for(let i = 0; i < arrOfStars.length; i++) {
+                let temparr = stars.split(arrOfStars[i]);
+                if(temparr.length > 2) return false;
+            }
 
-        // actualBtn.addEventListener('change', function(){
-        //     fileChosen.textContent = this.files[0].name;
-        // });
+            return true;
+        };
 
         $(document).ready(function () {
             var tbody = document.getElementById('tbody');
@@ -57,7 +44,7 @@
 
                     }
                 });
-            }
+            };
             getItems();
 
             function validateID(id) {
@@ -71,7 +58,7 @@
                 }
                 console.log(idIsValid)
                 return idIsValid;
-            }
+            };
 
             function checkIDUnique(id) {
                 var idIsUnique = true;
@@ -82,7 +69,7 @@
                     }
                 }
                 return idIsUnique;
-            }
+            };
 
             // запрос для просмотра элемента
             $('#select').on('click', function () {
@@ -119,7 +106,7 @@
                     })
                 // } else { alert('invalid ID!') }
 
-            })
+            });
 
             // запрос для удаления элемента
             $('#delete').on('click', function () {
@@ -150,7 +137,7 @@
                         }
                     })
                 // } else { alert('invalid ID!') }
-            })
+            });
             // запрос дл создания элемента
             $('#add').on('click', function () {
                 let title = $('#title').val();
@@ -165,6 +152,11 @@
 
                 if (releaseYear < 1850 || releaseYear > 2020) {
                     alert('Input release year from 1850 to 2020!');
+                    return;
+                }
+
+                if(!validateStars(stars)) {
+                    alert("Iput unique actors!");
                     return;
                 }
 
@@ -202,7 +194,7 @@
 
                     }
                 })
-            })
+            });
 
             $('#sort').on('click', function () {               
                 $.ajax({
