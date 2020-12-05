@@ -129,7 +129,7 @@ module.exports = {
 		ps.input('format', mssql.Text);
 		ps.input('stars', mssql.Text);
 
-		ps.prepare("INSERT INTO Films (title, releaseYear, format, stars) VALUES (@title, @releaseYear, @format, @stars)", function (err) {
+		ps.prepare("INSERT INTO Films (title, releaseYear, format, stars) VALUES (N'" + film.title + "', @releaseYear, N'" + film.format + "', N'" + film.stars + "')", function (err) {
 			if (err) console.log(err);
 			let request = ps.execute(film, function (err) {
 
