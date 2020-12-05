@@ -38,7 +38,7 @@ module.exports = {
     // создание фильма и обновление таблицы 
     addFilm: function (req, res) {
 		let film = new Film(req.body.title, req.body.releaseYear, req.body.format, req.body.stars);
-		queries.selectFilmToValidate(film, res, function() {
+		queries.selectFilmToValidate(film, res, () => {
 			queries.insertFilm(film);
 			queries.selectAllFilms(res);
 		});
