@@ -3,6 +3,32 @@ let connection = require('./configDB');
 
 
 module.exports = {
+	selectFilmToValidate: function(film, res, cb) {
+		let ps = new mssql.PreparedStatement(connection);
+
+		ps.input('title', mssql.Text);
+		ps.input('releaseYear', mssql.Int);
+		ps.input('format', mssql.Text);
+		ps.input('stars', mssql.Text);
+
+		ps.prepare('SELECT * FROM Films WHERE title LIKE @title AND (releaseYear LIKE @releaseYear OR format LIKE @format)', function(err) {
+			if (err) console.log(err); 
+			
+			ps.execute(film, function(err, rows) { 
+			
+					if (err) console.log(err); 
+				
+					if(rows.recordset.length) {
+						res.send("This film is already exist!");
+					} else {
+						cb();
+					}
+					// // res.json(rows);  
+					ps.unprepare();  
+					
+			}); 
+		}); 
+	},
 
 	// выбор всех элементов и отображение в виде таблицы 
 	selectAllFilms: function (res) {
@@ -89,13 +115,6 @@ module.exports = {
 	},
 	// добавить элемент в бд
 	insertFilm: function (film) {
-		// console.log(film);
-
-		// let inserts = {
-		// 	name: data.name,
-		// 	description: data.description,
-		// 	completed: parseInt(data.completed)
-		// }
 
 		let ps = new mssql.PreparedStatement(connection);
 
