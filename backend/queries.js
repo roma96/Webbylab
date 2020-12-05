@@ -10,10 +10,9 @@ module.exports = {
 
 		ps.input('title', mssql.Text);
 		ps.input('releaseYear', mssql.Int);
-		ps.input('format', mssql.Text);
 		ps.input('stars', mssql.Text);
 
-		ps.prepare('SELECT * FROM Films WHERE title LIKE @title AND (releaseYear LIKE @releaseYear OR format LIKE @format)', function(err) {
+		ps.prepare("SELECT * FROM Films WHERE title LIKE N'" + film.title + "' AND (releaseYear LIKE @releaseYear OR stars LIKE N'" + film.stars + "')", function(err) {
 			if (err) console.log(err); 
 			
 			ps.execute(film, function(err, rows) { 
@@ -86,7 +85,7 @@ module.exports = {
 		
 		ps.input('title', mssql.Text); 
 		
-		ps.prepare("SELECT * FROM Films WHERE (title LIKE '" + film.title + "%')", function(err) {
+		ps.prepare("SELECT * FROM Films WHERE (title LIKE N'" + film.title + "%')", function(err) {
 			if (err) console.log(err); 
 			
 			ps.execute(film, function(err, rows) { 
@@ -104,7 +103,7 @@ module.exports = {
 		
 		ps.input('actor', mssql.Text); 
 		
-		ps.prepare("SELECT * FROM Films WHERE (stars LIKE '%" + film.actor + "%')", function(err) {
+		ps.prepare("SELECT * FROM Films WHERE (stars LIKE N'%" + film.actor + "%')", function(err) {
 			if (err) console.log(err); 
 			
 			ps.execute(film, function(err, rows) { 
@@ -173,36 +172,6 @@ module.exports = {
 			});
 		});
 	},
-
-
-	// обновить элемент 
-	updateItem: function (req, res) {
-
-		let inserts = {
-			id: parseInt(req.body.id),
-			name: req.body.name,
-			description: req.body.description,
-			completed: parseInt(req.body.completed)
-		};
-
-		let ps = new mssql.PreparedStatement(connection);
-
-		ps.input('id', mssql.Int);
-		ps.input('name', mssql.Text);
-		ps.input('description', mssql.Text);
-		ps.input('completed', mssql.Int)
-
-		ps.prepare("UPDATE testRL SET name=@name, description=@description, completed=@completed WHERE id=@id", function (err) {
-			if (err) console.log(err)
-			ps.execute(inserts, function (err) {
-				if (err) console.log(err);
-
-				console.log('item updated');
-				ps.unprepare();
-			});
-		});
-	},
-
 	//удалить элемент
 	deleteFilm: function (film, res, cb) {
 
