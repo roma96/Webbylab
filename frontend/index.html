@@ -77,6 +77,11 @@
                 let filmTitle = $('#filmTitle1').val();
                 let actor = $('#actor').val();
 
+                if(!itemID && !filmTitle && !actor) {
+                    alert("Empty fields!");
+                    return;
+                }
+
                 // if (validateID(itemID)) {
                     $.ajax({
                         url: actor ? '/api/star/' + actor : '/api/' + (itemID ? itemID : (filmTitle ? filmTitle : " ")),
@@ -85,21 +90,27 @@
                         success: function (data) {
                             console.log(data);
                             var items = data["recordset"];
-                            var html = '';
+                            if(items.length) {
+                                var html = '';
 
-                            for (var i = 0; i < items.length; i++) {
-                                html += `<tr>
-                                            <td>${items[i].id}</td>
-                                            <td>${items[i].title}</td>
-                                            <td>${items[i].releaseYear}</td>
-                                            <td>${items[i].format}</td> 
-                                            <td>${items[i].stars}</td>
-                                        </tr>`
-                            };
-                            tbody.innerHTML = html;
-                            $('#back').css({
-                                display: 'block'
-                            })
+                                for (var i = 0; i < items.length; i++) {
+                                    html += `<tr>
+                                                <td>${items[i].id}</td>
+                                                <td>${items[i].title}</td>
+                                                <td>${items[i].releaseYear}</td>
+                                                <td>${items[i].format}</td> 
+                                                <td>${items[i].stars}</td>
+                                            </tr>`
+                                };
+                                tbody.innerHTML = html;
+                                $('#back').css({
+                                    display: 'block'
+                                })
+                            } else {
+                                alert("No results!");
+                                console.log(items);
+                                getItems();
+                            }
 
                         }
 
@@ -117,22 +128,22 @@
                         accept: 'application/json',
                         type: 'DELETE',
                         success: function (data) {
-                            // console.log(data);
-                            // var items = data["recordset"];
-                            // var html = '';
+                            console.log(data);
+                            var items = data["recordset"];
+                            var html = '';
 
-                            // for (var i = 0; i < items.length; i++) {
-                            //     html += `<tr>
-                            //                 <td>${items[i].id}</td>
-                            //                 <td>${items[i].title}</td>
-                            //                 <td>${items[i].releaseYear}</td>
-                            //                 <td>${items[i].format}</td> 
-                            //                 <td>${items[i].stars}</td>
-                            //             </tr>`
-                            // };
-                            // tbody.innerHTML = html;
+                            for (var i = 0; i < items.length; i++) {
+                                html += `<tr>
+                                            <td>${items[i].id}</td>
+                                            <td>${items[i].title}</td>
+                                            <td>${items[i].releaseYear}</td>
+                                            <td>${items[i].format}</td> 
+                                            <td>${items[i].stars}</td>
+                                        </tr>`
+                            };
+                            tbody.innerHTML = html;
 
-                            window.location.href = '/';
+                            getItems();
 
                         }
                     })
@@ -175,25 +186,25 @@
                     contentType: 'application/json',
                     data: JSON.stringify(requestData),
                     success: function (data) {
-
-                        // var items = data["recordset"];
-                        // var html = '';
-
-                        // for (var i = 0; i < items.length; i++) {
-                        //     html += `<tr>
-                        //                 <td>${items[i].id}</td>
-                        //                 <td>${items[i].title}</td>
-                        //                 <td>${items[i].releaseYear}</td>
-                        //                 <td>${items[i].format}</td> 
-                        //                 <td>${items[i].stars}</td>
-                        //             </tr>`
-                        // };
-                        // tbody.innerHTML = html;
                         
                         if(typeof(data) == "string") {
                             alert(data);
                         } else {
-                            window.location.href = '/';
+                            var items = data["recordset"];
+                            var html = '';
+
+                            for (var i = 0; i < items.length; i++) {
+                                html += `<tr>
+                                            <td>${items[i].id}</td>
+                                            <td>${items[i].title}</td>
+                                            <td>${items[i].releaseYear}</td>
+                                            <td>${items[i].format}</td> 
+                                            <td>${items[i].stars}</td>
+                                        </tr>`
+                            };
+                            tbody.innerHTML = html;
+
+                            getItems();
                         }
 
                     }
@@ -257,23 +268,23 @@
                     return myXhr;
                 },
                 success: function (data) {
-                    // alert("File was uploaded");
-                    // console.log(data);
-                    // var items = data["recordset"];
-                    // var html = '';
+                    alert("File was uploaded");
+                    console.log(data);
+                    var items = data["recordset"];
+                    var html = '';
 
-                    // for (var i = 0; i < items.length; i++) {
-                    //     html += `<tr>
-                    //                 <td>${items[i].id}</td>
-                    //                 <td>${items[i].title}</td>
-                    //                 <td>${items[i].releaseYear}</td>
-                    //                 <td>${items[i].format}</td> 
-                    //                 <td>${items[i].stars}</td>
-                    //             </tr>`
-                    // };
-                    // tbody.innerHTML = html;
+                    for (var i = 0; i < items.length; i++) {
+                        html += `<tr>
+                                    <td>${items[i].id}</td>
+                                    <td>${items[i].title}</td>
+                                    <td>${items[i].releaseYear}</td>
+                                    <td>${items[i].format}</td> 
+                                    <td>${items[i].stars}</td>
+                                </tr>`
+                    };
+                    tbody.innerHTML = html;
 
-                        window.location.href = '/';
+                    getItems();
 
                     }
                 });
