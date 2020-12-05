@@ -3,7 +3,9 @@ let connection = require('./configDB');
 
 
 module.exports = {
-	selectFilmToValidate: function(film, res, cb) {
+	//проверка на то, не повторяются ли фильмы, фильмы могут быть с одинаковым названием,
+	// но тогда у них должен быть разный год выпуска и актерский состав
+	selectFilmToValidate: function(film, cb, res) {
 		let ps = new mssql.PreparedStatement(connection);
 
 		ps.input('title', mssql.Text);
@@ -19,7 +21,11 @@ module.exports = {
 					if (err) console.log(err); 
 				
 					if(rows.recordset.length) {
-						res.send("This film is already exist!");
+						if(res) {
+							res.send("This film is already exist!");
+						} else {
+							console.log("This film from file is already exist!");
+						}
 					} else {
 						cb();
 					}
