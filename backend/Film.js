@@ -39,7 +39,6 @@ class Film {
 
     //сеттер формата, который проверяет значение на допустимость
     set format(val) {
-        console.log(val);
         if(val == "DVD" || val == "VHS" || val == "Blu-Ray") {
             this._format = val;
         } else {
