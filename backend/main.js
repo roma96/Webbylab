@@ -35,21 +35,6 @@ app.use('/', express.static(path.join(__dirname, catalog)));
 //middleware для того, чтобы прочитать запрос при добавлении фильма
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/', function (req, res) {
-    fs.readFile(path.join(__dirname,'index.html'),"utf8", function(err, file) {
-        if (err) {
-            res.writeHead(500, { "Content-Type": "text/plain" });
-            res.write(err + "\n");
-            res.end();
-            return;
-        }
-
-        res.writeHead(200, { "Content-Type": "text/html" });
-        res.write(file);
-        res.end();
-  })
-}); 
-
 //выбрать все фильмы из бд
 app.get('/api', apiHandler.loadAllFilms); 
 
