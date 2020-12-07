@@ -85,7 +85,7 @@ module.exports = {
 		
 		ps.input('title', mssql.Text); 
 		
-		ps.prepare("SELECT * FROM Films WHERE (title LIKE N'" + film.title + "%')", function(err) {
+		ps.prepare("SELECT * FROM Films WHERE (title LIKE N'%" + film.title + "%')", function(err) {
 			if (err) console.log(err); 
 			
 			ps.execute(film, function(err, rows) { 
