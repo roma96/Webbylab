@@ -35,50 +35,59 @@ function readFileAndInsertToDB(filename) {
     });
 }
 
+function getExtension(filename) {
+    var ext = path.extname(filename || '').split('.');
+    return ext[ext.length - 1];
+}
+
 //реализуем функционал, который будем экспортировать
 module.exports = {
     uploadFile: function(req, res) {
-        // загруженный файл доступен через свойство req.file
-        console.log("req.file " + req.file); 
-        
-        // файл временного хранения данных
-        let tmp_path = req.file.path;
-        console.log("tmp_path " + tmp_path);
-        
-        // место, куда файл будет загружен 
-        let target_path = path.join(req.file.destination, req.file.originalname);
-        console.log("target_path " + target_path); 
-        
-        // загрузка файла 
-        let src = fs.createReadStream(tmp_path); 
-        let dest = fs.createWriteStream(target_path);
-        console.log("src " + src);
-        console.log("dest " + dest);
-        
-        //перенаправляем данные из потока src в поток dest
-        src.pipe(dest); 
-        
-        // обработка результатов загрузки 
-        src.on('end', function(){ 
-        
-            // удалить файл временного хранения данных
-            fs.unlink(tmp_path, () => {
-                // res.send('complete'); 
-                console.log('file was uploaded');
-            }); 
-        });
-        
-        src.on('error', function(err) { 
-        
-            // удалить файл временного хранения данных
-            fs.unlink(tmp_path, () => {
-                // res.send('complete'); 
-                console.log(err);
-            }); 
-        });
+        if(getExtension(req.file.originalname) == "txt") {
+            // загруженный файл доступен через свойство req.file
+            console.log("req.file " + req.file); 
+            
+            // файл временного хранения данных
+            let tmp_path = req.file.path;
+            console.log("tmp_path " + tmp_path);
+            
+            // место, куда файл будет загружен 
+            let target_path = path.join(req.file.destination, req.file.originalname);
+            console.log("target_path " + target_path); 
+            
+            // загрузка файла 
+            let src = fs.createReadStream(tmp_path); 
+            let dest = fs.createWriteStream(target_path);
+            console.log("src " + src);
+            console.log("dest " + dest);
+            
+            //перенаправляем данные из потока src в поток dest
+            src.pipe(dest); 
+            
+            // обработка результатов загрузки 
+            src.on('end', function(){ 
+            
+                // удалить файл временного хранения данных
+                fs.unlink(tmp_path, () => {
+                    // res.send('complete'); 
+                    console.log('file was uploaded');
+                }); 
+            });
+            
+            src.on('error', function(err) { 
+            
+                // удалить файл временного хранения данных
+                fs.unlink(tmp_path, () => {
+                    // res.send('complete'); 
+                    console.log(err);
+                }); 
+            });
 
-        // вызываем функцию, которая считывает данные с файла и записывает их в бд
-        readFileAndInsertToDB(target_path);
-        queries.selectAllFilms(res);
+            // вызываем функцию, которая считывает данные с файла и записывает их в бд
+            readFileAndInsertToDB(target_path);
+            queries.selectAllFilms(res);
+        } else {
+            res.send("This file has wrong extension! Load txt-file!");
+        }
     }
 };
