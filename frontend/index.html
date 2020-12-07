@@ -17,6 +17,10 @@
 
             return true;
         };
+        function getExtension(filename) {
+            var ext = filename.split('.');
+            return ext[ext.length - 1];
+        };
 
         $(document).ready(function () {
             var tbody = document.getElementById('tbody');
@@ -236,60 +240,67 @@
                 })
             });
             $('#button').on('click', function () {
-            $.ajax({
-                // Your server script to process the upload
-                url: '/',
-                type: 'POST',
+                if(getExtension($('#filename').val()) == "txt") {
+                    $.ajax({
+                        // Your server script to process the upload
+                        url: '/',
+                        type: 'POST',
 
-                // Form data
-                data: new FormData($('form')[0]),
+                        // Form data
+                        data: new FormData($('form')[0]),
 
-                // Tell jQuery not to process data or worry about content-type
-                // You *must* include these options!
-                cache: false,
-                contentType: false,
-                processData: false,
+                        // Tell jQuery not to process data or worry about content-type
+                        // You *must* include these options!
+                        cache: false,
+                        contentType: false,
+                        processData: false,
 
-                // Custom XMLHttpRequest
-                xhr: function () {
-                    var myXhr = $.ajaxSettings.xhr();
-                    if (myXhr.upload) {
-                        // For handling the progress of the upload
-                        myXhr.upload.addEventListener('progress', function (e) {
-                            if (e.lengthComputable) {
-                                $('progress').attr({
-                                value: e.loaded,
-                                max: e.total,
-                                });
+                        // Custom XMLHttpRequest
+                        xhr: function () {
+                            var myXhr = $.ajaxSettings.xhr();
+                            if (myXhr.upload) {
+                                // For handling the progress of the upload
+                                myXhr.upload.addEventListener('progress', function (e) {
+                                    if (e.lengthComputable) {
+                                        $('progress').attr({
+                                        value: e.loaded,
+                                        max: e.total,
+                                        });
+                                    }
+                                }, false);
                             }
-                        }, false);
-                    }
-                    
-                    return myXhr;
-                },
-                success: function (data) {
-                    alert("File was uploaded");
-                    console.log(data);
-                    var items = data["recordset"];
-                    var html = '';
+                            
+                            return myXhr;
+                        },
+                        success: function (data) {
+                            if(typeof(data) === "string") {
+                                alert(data);
+                            } else {
+                                alert("File was uploaded");
+                                console.log(data);
+                                var items = data["recordset"];
+                                var html = '';
 
-                    for (var i = 0; i < items.length; i++) {
-                        html += `<tr>
-                                    <td>${items[i].id}</td>
-                                    <td>${items[i].title}</td>
-                                    <td>${items[i].releaseYear}</td>
-                                    <td>${items[i].format}</td> 
-                                    <td>${items[i].stars}</td>
-                                </tr>`
-                    };
-                    tbody.innerHTML = html;
+                                for (var i = 0; i < items.length; i++) {
+                                    html += `<tr>
+                                                <td>${items[i].id}</td>
+                                                <td>${items[i].title}</td>
+                                                <td>${items[i].releaseYear}</td>
+                                                <td>${items[i].format}</td> 
+                                                <td>${items[i].stars}</td>
+                                            </tr>`
+                                };
+                                tbody.innerHTML = html;
 
-                    getItems();
+                                getItems();
 
-                    }
-                });
+                            }
+                        }
+                    });
+                } else {
+                    alert("This file has wrong extension! Load txt-file!");
+                }
             });
-
         })
     </script>
 </head>
@@ -355,24 +366,9 @@
             <div class="panel" style="padding-left: 25px; padding-bottom: 25px;">
                 <h3>Import films from file</h3>
                 <form enctype="multipart/form-data">
-                    <input name="recfile" type="file" />
+                    <input id="filename" name="recfile" type="file" />
                     <input id="button" type="button" value="Upload" />
                 </form>
-                <!-- <form id='form' enctype="multipart/form-data">
-                    <input type="file" name="recfile" />
-                    <button id="uploadFile">Upload file</button>
-                </form> -->
-                <!-- <form enctype="multipart/form-data"></form>
-                    actual upload which is hidden
-                    <input type="file" name="recfile" id="actual-btn" hidden style="display: none;">
-
-                    our custom upload button
-                    <label id="speclabel" for="actual-btn">Choose File</label>
-
-                    name of file chosen
-                    <span id="file-chosen">No file chosen</span>
-                    <button id="uploadFile">Upload file</button>
-                </form> -->
             </div>
             </div>   
             </div>
